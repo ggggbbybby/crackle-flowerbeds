@@ -1,0 +1,24 @@
+{
+  "name": "crackle-flowerbeds",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": "./src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "none",
+  "description": "",
+  "dependencies": {
+    "@svgdotjs/svg.js": "^3.2.4",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "fabric": "^6.0.2",
+    "svg": "^0.1.0",
+    "svgdom": "^0.1.19",
+    "tracery": "^1.0.3"
+  }
+}
