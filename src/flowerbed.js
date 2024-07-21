@@ -1,7 +1,9 @@
 import { createSVGWindow } from 'svgdom' ;
 import { SVG, registerWindow, create } from '@svgdotjs/svg.js';
 
-const colors = { // ideally these would be configurable
+const colors = { 
+  // ideally these would be configurable but I'm not sure how to do that with a server-rendered page
+  // maybe I can pass alternate colors in via params
   'yellow': '#ffc20e',
   'red': '#ef1e24',
   'blue': '#4d6df3',
@@ -57,29 +59,40 @@ const textureD = (canvas) => {
   canvas.rect(4,4).fill(colors.red).move(4,12)
 }
 
-const addBlocks = (canvas, profileString) => {
-  const profileSize = profileString.length;
-  canvas.size(profileSize * 64, profileSize * 64);
+// this could be a function but I think objects are easier to read than 4 if statements stacked up wearing a trenchcoat
+// there's probably a way to do this with math but again, not sure if that's much easier to read
+// the first key is the threading block, the second is the treadling block (warp char then weft char)
+const calculateTexture = {
+  'A': { 'A': 'A', 'B': 'D', 'C': 'C', 'D': 'B' },
+  'B': { 'A': 'B', 'B': 'A', 'C': 'D', 'D': 'C' },
+  'C': { 'A': 'C', 'B': 'B', 'C': 'A', 'D': 'D' },
+  'D': { 'A': 'D', 'B': 'C', 'C': 'B', 'D': 'A' },
+}
 
-  // I don't know where else to create these patterns
-  // but this seems like a strange place to do it
-  // I guess this is the draw-everything function
+const drawEverything = (canvas, seed) => {
+  const seedSize = seed.length;
+  canvas.size(seedSize * 64, seedSize * 64);
+
   const fills = {
     'A': canvas.pattern(16, 16, textureA),
     'B': canvas.pattern(16, 16, textureB),
     'C': canvas.pattern(16, 16, textureC),
     'D': canvas.pattern(16, 16, textureD)
   }
-  profileString.split('').forEach((char, idx, row) => {
-    const block = canvas.rect(64, 64)
-    block.move(64 * idx, 64 * idx)
-    block.fill(fills[char])
-  })
+  seedString.split('').forEach((weftChar, rowIdx, row) => {
+    row.forEach((warpChar, threadIdx) => {
+      const block = canvas.rect(64, 64)
+      block.move(64 * threadIdx, 64 * rowIdx)
+      const fill = calculateTexture[warpChar][weftChar];
+      //console.log(`Warp #${threadIdx} (${warpChar}) X Weft #${rowIdx} (${weftChar}) = ${fill}`)
 
+      block.fill(fills[fill])
+    })
+  })
   return canvas;
 }
 
-const flowerbedSVG = () => {
+const flowerbedSVG = (seed) => {
   // headless dom setup, important but boring 
   const window = createSVGWindow();
   const document = window.document;
@@ -87,7 +100,7 @@ const flowerbedSVG = () => {
 
   // let's draw some flowers
   const canvas = SVG(document.documentElement)
-  return addBlocks(canvas, 'ABBA').svg();
+  return drawEverything(canvas, seed).svg();
 }
 // pearl has a comment to add
 // mhbddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd 
