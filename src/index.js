@@ -1,6 +1,7 @@
 import express from 'express';
 import { renderFile } from 'ejs';
 
+import wiggle from './wiggle.js';
 import flowerbedSVG from './flowerbed.js';
 
 import dotenv from 'dotenv';
@@ -16,13 +17,19 @@ app.engine('html', renderFile);
 // render a generated flowerbed svg
 // not guaranteed to give you the same thing every time
 app.get("/", (req, res) => {
-  const seed = 'ABCDCBA';
+  const seed = wiggle();
   res.render("layout.html", { seed: seed, flowerbedSVG: flowerbedSVG(seed, req.query) });
 })
 
 // same thing as above but with the seed in the URL (ie a permalink)
 app.get("/:seed([ABCD]+)", (req, res) => {
-  res.render("layout.html", { seed: req.params.seed, flowerbedSVG: flowerbedSVG(req.params.seed.toUpperCase(), req.query) });
+  res.render(
+    "layout.html", 
+    { 
+      seed: req.params.seed, 
+      flowerbedSVG: flowerbedSVG(req.params.seed.toUpperCase(), req.query) 
+    }
+  );
 })
 
 app.listen(port, () => {
