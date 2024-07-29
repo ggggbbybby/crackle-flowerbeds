@@ -1,7 +1,7 @@
 import { createSVGWindow } from 'svgdom' ;
 import { SVG, registerWindow, create } from '@svgdotjs/svg.js';
 
-const pixelSize = 2;
+const pixelSize = 1;
 // why??? because autocomplete is easier this way
 const pixelSizeX2 = pixelSize * 2;
 const pixelSizeX3 = pixelSize * 3;
@@ -80,7 +80,7 @@ const calculateTexture = {
   'D': { 'A': 'D', 'B': 'C', 'C': 'B', 'D': 'A' },
 }
 
-const drawEverything = (canvas, seed) => {
+const drawSquare = (canvas, seed) => {
   const seedSize = seed.length;
   canvas.size(seedSize * pixelSizeX4 * 4, seedSize * pixelSizeX4 * 4);
 
@@ -103,7 +103,7 @@ const drawEverything = (canvas, seed) => {
   return canvas;
 }
 
-const flowerbedSVG = (seed, colorOverrides) => {
+const flowerbedSVG = (seed, colorOverrides = {}) => {
   // headless dom setup, important but boring 
   const window = createSVGWindow();
   const document = window.document;
@@ -118,7 +118,7 @@ const flowerbedSVG = (seed, colorOverrides) => {
 
   // let's draw some flowers
   const canvas = SVG(document.documentElement);
-  const svg = drawEverything(canvas, seed).svg();
+  const svg = drawSquare(canvas, seed).svg();
 
   // remove any color overrides because otherwise we have to deal with state management and no thank you
   resetColors();

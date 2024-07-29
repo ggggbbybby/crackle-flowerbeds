@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>algorithmically generated crackle flowerbeds!!</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="a canvas for drawing flowerbeds filled with interesting textures" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>thanks everybody!!</h1>
+  </header>
+
+  <!-- lets be super cool and draw the bangbang logo filled in with our flowerbed pattern -->
+  <svg height="768" width="768">
+    <mask id="bangbang">
+      <rect width="128" height="128" fill="#fff" />
+      <path d="M0 0 C6.6 0 13.2 0 20 0 C20.76772518 22.17872756 18.52764443 43.13798657 15 65 C11.7 65 8.4 65 5 65 C4.1087118 59.20068477 3.23983939 53.39866815 2.38916016 47.59326172 C2.06531843 45.435265 1.71386145 43.28143452 1.35546875 41.12890625 C-0.71640907 27.52009726 -0.16694444 13.72654323 0 0 Z " fill="#000" transform="translate(72,17)"/>
+      <path d="M0 0 C6.6 0 13.2 0 20 0 C20.76772518 22.17872756 18.52764443 43.13798657 15 65 C11.7 65 8.4 65 5 65 C4.1087118 59.20068477 3.23983939 53.39866815 2.38916016 47.59326172 C2.06531843 45.435265 1.71386145 43.28143452 1.35546875 41.12890625 C-0.71640907 27.52009726 -0.16694444 13.72654323 0 0 Z " fill="#000" transform="translate(36,17)"/>
+      <path d="M0 0 C6.6 0 13.2 0 20 0 C20 6.6 20 13.2 20 20 C13.4 20 6.8 20 0 20 C0 13.4 0 6.8 0 0 Z " fill="#000" transform="translate(72,89)"/>
+      <path d="M0 0 C6.6 0 13.2 0 20 0 C20 6.6 20 13.2 20 20 C13.4 20 6.8 20 0 20 C0 13.4 0 6.8 0 0 Z " fill="#000" transform="translate(36,89)"/>
+    </mask>
+    <%- background %>
+    <g transform="scale(6)">
+      <rect width="128" height="128" fill="#fff" mask="url(#bangbang)"></rect>
+    </g>
+  </svg>
+</body>
+
+</html>

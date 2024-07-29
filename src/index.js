@@ -32,6 +32,15 @@ app.get("/:seed([ABCD]+)", (req, res) => {
   );
 })
 
+app.get("/bangbang", (req, res) => {
+  res.render(
+    "bangbang.html",
+    {
+      background: flowerbedSVG(wiggle(10))
+    }
+  )
+})
+
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
