@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { line, point, wave, d6, linePointLine } from '../wiggle.js';
+import { line, point, wave, d4, linePointLine } from '../wiggle.js';
 
 describe("lines", () => {
   it("generates an empty line", () => {
@@ -148,9 +148,9 @@ describe("waves", () => {
   })
 })
 
-describe("d6", () => {
-  it("generates a number between 1 and 6", () => {
-    expect(d6()).to.be.within(1, 6)
+describe("d4", () => {
+  it("generates a number between 1 and 5", () => {
+    expect(d4()).to.be.within(1, 5)
   })
 })
 
@@ -160,12 +160,12 @@ describe("linePointLine", () => {
     expect(instructions.length).to.eq(3)
 
     expect(instructions[0].type).to.eq('line')
-    expect(instructions[0].width).to.be.within(1, 6)
+    expect(instructions[0].width).to.be.within(1, 5)
 
     expect(instructions[1].type).to.eq('point')
-    expect(instructions[1].width).to.be.within(1, 6)
+    expect(instructions[1].width).to.be.within(1, 5)
 
     expect(instructions[2].type).to.eq('line')
-    expect(instructions[2].width).to.be.within(1, 6)
+    expect(instructions[2].width).to.be.within(1, 5)
   })
 })

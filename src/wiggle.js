@@ -43,8 +43,45 @@ export const wave = (instructions, startingChar = 'A', asc = true) => {
   }, [])
 }
 
-export const d4 = () => sample([1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 5]) // lmao
-export const d6 = () => sample([1, 2, 3, 4, 5, 6]) 
+export const d4 = () => sample([1, 1, 2, 3, 5]) // our d4 is a weighted fibonnaci die, for the aethetic ✨
+
+// a cheeky global to keep track of our curve direction
+let blockSizeIncreasing = true;
+const blockSizes = [1, 2, 3, 5];
+
+export const nextBlockSize = (currentBlockSize) => {
+  // instead of randomly selecting block sizes, create smooth curves that tend to get larger or smaller
+  // "smooth curves" is entirely vibes based
+  
+  // made up rule: there should always be a 33% chance that you stay at the same block size
+  const rand = Math.random();
+  if (rand <= 0.33) {
+    return currentBlockSize
+  }
+
+  // if we're at one extreme and we win a coin flip, then change block size direction
+  if ((currentBlockSize === 1 || currentBlockSize === 5) && rand >= 0.5) {
+    blockSizeIncreasing = !blockSizeIncreasing
+  }
+
+  // 50% chance to go 1 step in the current direction, 
+  // 10% chance to go 2 steps
+  // 7% chance to go 1 in the opposite direction (without changing the overall direction)
+  const idx = blockSizes.indexOf(currentBlockSize)
+  if (rand <= 0.83) {
+    const nextIdx = idx + (blockSizeIncreasing && 1 || -1)
+    return blockSizes[Math.min(nextIdx, blockSizes.length - 1)]
+  }
+
+  if (rand <= 0.93) {
+    const nextIdx = idx + (blockSizeIncreasing && 2 || -2)
+    return blockSizes[Math.max(0, nextIdx)]
+  }
+
+  // the 7% wiggle
+  const nextIdx = idx + (blockSizeIncreasing && -1 || 1)
+  return blockSizes[nextIdx % blockSizes.length]
+}
 
 export const linePointLine = (pointCount = 1) => {
   // create a set of instructions to generate a wave with random segment lengths
@@ -64,7 +101,12 @@ const wiggle = (pointCount = 4) => {
   // a wiggle is a wave that's been stretched to sharpen or flatten some of the points
   const instructions = linePointLine(pointCount)
   const blocks = wave(instructions, sample(alphabet))
-  const stretches = blocks.flatMap((block) => Array(d4()).fill(block))
+  
+  let blockSize;
+  const stretches = blocks.flatMap((block) => {
+    blockSize = !blockSize ? d4() : nextBlockSize(blockSize)
+    return Array(blockSize).fill(block)
+  })
 
   return stretches.join('')
 }

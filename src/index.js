@@ -17,8 +17,8 @@ app.engine('html', renderFile);
 // render a generated flowerbed svg
 // not guaranteed to give you the same thing every time
 app.get("/", (req, res) => {
-  const warp = wiggle();
-  const weft = wiggle();
+  const warp = wiggle(3);
+  const weft = wiggle(5);
   res.render("layout.html", { seed: `${warp}/${weft}`, flowerbedSVG: flowerbedSVG([warp, weft], req.query) });
 })
 
