@@ -1,6 +1,13 @@
 import { createSVGWindow } from 'svgdom' ;
 import { SVG, registerWindow, create } from '@svgdotjs/svg.js';
 
+const pixelSize = 2;
+// why??? because autocomplete is easier this way
+const pixelSizeX2 = pixelSize * 2;
+const pixelSizeX3 = pixelSize * 3;
+const pixelSizeX4 = pixelSize * 4;
+const pixelSizeX16 = pixelSize * 16;
+
 let colors;
 
 // default colors. the user is allowed to override these per-request
@@ -15,52 +22,52 @@ const resetColors = () => {
 }
 
 const textureA = (canvas) => {
-  canvas.rect(16,16).fill(colors.warp)
+  canvas.rect(pixelSizeX4, pixelSizeX4).fill(colors.warp)
   // row 1 has weft1 spots
-  canvas.rect(4,4).fill(colors.weft1).move(4,0)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft1).move(pixelSize, 0)
   // row 2 has weft2 spots
-  canvas.rect(4,4).fill(colors.weft2).move(12,4)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft2).move(pixelSizeX3, pixelSize)
   // row 3 has weft3 floats
-  canvas.rect(4,4).fill(colors.weft3).move(0,8)
-  canvas.rect(8,4).fill(colors.weft3).move(8,8)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft3).move(0, pixelSizeX2)
+  canvas.rect(pixelSizeX2, pixelSize).fill(colors.weft3).move(pixelSizeX2, pixelSizeX2)
   // row 4 has weft2 spots again
-  canvas.rect(4,4).fill(colors.weft2).move(12,12)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft2).move(pixelSizeX3, pixelSizeX3)
 }
 const textureB = (canvas) => {
-  canvas.rect(16,16).fill(colors.warp)
+  canvas.rect(pixelSizeX4, pixelSizeX4).fill(colors.warp)
   // row 1 has weft1 spots
-  canvas.rect(4,4).fill(colors.weft1).move(12,0)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft1).move(pixelSizeX3, 0)
   // row 2 has weft2 floats
-  canvas.rect(4,4).fill(colors.weft2).move(0,4)
-  canvas.rect(8,4).fill(colors.weft2).move(8,4)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft2).move(0, pixelSize)
+  canvas.rect(pixelSizeX2, pixelSize).fill(colors.weft2).move(pixelSizeX2, pixelSize)
   // row 3 has weft3 floats
-  canvas.rect(12,4).fill(colors.weft3).move(0,8)
+  canvas.rect(pixelSizeX3, pixelSize).fill(colors.weft3).move(0, pixelSizeX2)
   // row 4 has weft2 floats
-  canvas.rect(4,4).fill(colors.weft2).move(0,12)
-  canvas.rect(8,4).fill(colors.weft2).move(8,12)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft2).move(0, pixelSizeX3)
+  canvas.rect(pixelSizeX2, pixelSize).fill(colors.weft2).move(pixelSizeX2, pixelSizeX3)
 }
 const textureC = (canvas) => {
-  canvas.rect(16,16).fill(colors.warp)
+  canvas.rect(pixelSizeX4, pixelSizeX4).fill(colors.warp)
   // row 1 has weft1 floats
-  canvas.rect(4,4).fill(colors.weft1)
-  canvas.rect(8,4).fill(colors.weft1).move(8,0)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft1)
+  canvas.rect(pixelSizeX2, pixelSize).fill(colors.weft1).move(pixelSizeX2, 0)
   // row 2 has weft2 floats
-  canvas.rect(12,4).fill(colors.weft2).move(0,4)
+  canvas.rect(pixelSizeX3, pixelSize).fill(colors.weft2).move(0, pixelSize)
   // row 3 has weft3 spots
-  canvas.rect(4,4).fill(colors.weft3).move(4,8)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft3).move(pixelSize, pixelSizeX2)
   // row 4 has weft2 floats
-  canvas.rect(12,4).fill(colors.weft2).move(0,12)
+  canvas.rect(pixelSizeX3, pixelSize).fill(colors.weft2).move(0, pixelSizeX3)
 }
 const textureD = (canvas) => {
-  canvas.rect(16,16).fill(colors.warp)
+  canvas.rect(pixelSizeX4, pixelSizeX4).fill(colors.warp)
   // row 1 has weft1 floats
-  canvas.rect(12,4).fill(colors.weft1)
+  canvas.rect(pixelSizeX3, pixelSize).fill(colors.weft1)
   // row 2 has weft2 spots
-  canvas.rect(4,4).fill(colors.weft2).move(4,4)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft2).move(pixelSize, pixelSize)
   // row 3 has weft3 spots
-  canvas.rect(4,4).fill(colors.weft3).move(12,8)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft3).move(pixelSizeX3, pixelSizeX2)
   // row 4 has weft2 spots
-  canvas.rect(4,4).fill(colors.weft2).move(4,12)
+  canvas.rect(pixelSize, pixelSize).fill(colors.weft2).move(pixelSize, pixelSizeX3)
 }
 
 // this could be a function but I think objects are easier to read than 4 if statements stacked up wearing a trenchcoat
@@ -75,18 +82,18 @@ const calculateTexture = {
 
 const drawEverything = (canvas, seed) => {
   const seedSize = seed.length;
-  canvas.size(seedSize * 64, seedSize * 64);
+  canvas.size(seedSize * pixelSizeX4 * 4, seedSize * pixelSizeX4 * 4);
 
   const fills = {
-    'A': canvas.pattern(16, 16, textureA),
-    'B': canvas.pattern(16, 16, textureB),
-    'C': canvas.pattern(16, 16, textureC),
-    'D': canvas.pattern(16, 16, textureD)
+    'A': canvas.pattern(pixelSizeX4, pixelSizeX4, textureA),
+    'B': canvas.pattern(pixelSizeX4, pixelSizeX4, textureB),
+    'C': canvas.pattern(pixelSizeX4, pixelSizeX4, textureC),
+    'D': canvas.pattern(pixelSizeX4, pixelSizeX4, textureD)
   }
   seed.split('').forEach((weftChar, rowIdx, row) => {
     row.forEach((warpChar, threadIdx) => {
-      const block = canvas.rect(64, 64)
-      block.move(64 * threadIdx, 64 * rowIdx)
+      const block = canvas.rect(pixelSizeX16, pixelSizeX16)
+      block.move(pixelSizeX16 * threadIdx, pixelSizeX16 * rowIdx)
       const fill = calculateTexture[warpChar][weftChar];
       //console.log(`Warp #${threadIdx} (${warpChar}) X Weft #${rowIdx} (${weftChar}) = ${fill}`)
 
