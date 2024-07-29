@@ -1,8 +1,10 @@
 import express from 'express';
 import { renderFile } from 'ejs';
+import { createHash } from 'crypto';
 
 import wiggle from './wiggle.js';
 import flowerbedSVG from './flowerbed.js';
+import generateWIF from './wif.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,13 +24,14 @@ app.get("/", (req, res) => {
   res.render("layout.html", { seed: `${warp}/${weft}`, flowerbedSVG: flowerbedSVG([warp, weft], req.query) });
 })
 
-// same thing as above but with the seed in the URL (ie a permalink)
-app.get("/:seed([ABCD]+)", (req, res) => {
+// given a warp profile, generate a weft profile to go with it
+app.get("/:warp([ABCD]+)", (req, res) => {
+  const weft = wiggle(5);
   res.render(
     "layout.html", 
     { 
-      seed: req.params.seed, 
-      flowerbedSVG: flowerbedSVG([req.params.seed.toUpperCase()], req.query) 
+      seed: `${req.params.warp}/${weft}`, 
+      flowerbedSVG: flowerbedSVG([req.params.warp.toUpperCase(), wiggle(5)], req.query) 
     }
   );
 })
@@ -42,6 +45,14 @@ app.get("/:warp([ABCD]+)/:weft([ABCD]+)", (req, res) => {
       flowerbedSVG: flowerbedSVG([warp.toUpperCase(), weft.toUpperCase()], req.query) 
     }
   );
+})
+
+app.get("/:warp([ABCD]+)/:weft([ABCD]+).wif", (req, res) => {
+  const wif = generateWIF(Array.from(req.params.warp.toUpperCase()), Array.from(req.params.weft.toUpperCase()))
+  const filename = createHash('md5').update(wif).digest('hex')
+  res.set({"Content-Disposition": `attachment; filename="crackle-profile-${filename}.wif"`})
+  res.set({"Content-type": "text/plain"})
+  res.send(wif)
 })
 
 app.get("/bangbang", (req, res) => {
