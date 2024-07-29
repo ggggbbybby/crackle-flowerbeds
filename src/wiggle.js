@@ -1,4 +1,5 @@
 import last from 'lodash/last.js';
+import sample from 'lodash/sample.js';
 
 const alphabet = ['A', 'B', 'C', 'D'];
 const nextChar = (x) => alphabet[ (alphabet.indexOf(x) + 1) % alphabet.length ];
@@ -25,12 +26,12 @@ export const point = (startingChar = 'A', width = 4, asc = true) => {
   return leg1.concat(leg2)
 }
 
-export const wave = (chunks, startingChar = 'A', asc = true) => {
+export const wave = (instructions, startingChar = 'A', asc = true) => {
   // a wave is made of continuous lines and points that alternate directions
-  // each chunk is either a line or a point, with a specified width
+  // each instruction is either a line or a point, with a specified width
   let char = startingChar
   let dir = asc
-  return chunks.reduce((memo, {type, width}) => {
+  return instructions.reduce((memo, {type, width}) => {
     const segment = type == 'point' ? point(char, width, dir) : line(char, width, dir)
 
     // the next starting char is going to be one past the end of this segment
@@ -39,14 +40,33 @@ export const wave = (chunks, startingChar = 'A', asc = true) => {
     char = dir ? nextChar(last(segment)) : prevChar(last(segment))
 
     return memo.concat(segment)
-  }, []);
+  }, [])
 }
 
-const wiggle = () => {
-  // a wiggle is a wave that's been stretched to sharpen or flatten some of the points
-  // todo: write this
+export const d4 = () => sample([1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 5]) // lmao
+export const d6 = () => sample([1, 2, 3, 4, 5, 6]) 
 
-  return "ABCBADCBABCD";
+export const linePointLine = (pointCount = 1) => {
+  // create a set of instructions to generate a wave with random segment lengths
+  let points = 0
+  let out = [{ type: 'line', width: d4() }]
+  
+  while (points < pointCount) {
+    out.push({ type: 'point', width: d4() })
+    out.push({ type: 'line', width: d4() })
+    points++
+  }
+
+  return out;
+}
+
+const wiggle = (pointCount = 4) => {
+  // a wiggle is a wave that's been stretched to sharpen or flatten some of the points
+  const instructions = linePointLine(pointCount)
+  const blocks = wave(instructions, sample(alphabet))
+  const stretches = blocks.flatMap((block) => Array(d4()).fill(block))
+
+  return stretches.join('')
 }
 
 export default wiggle;
