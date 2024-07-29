@@ -80,9 +80,9 @@ const calculateTexture = {
   'D': { 'A': 'D', 'B': 'C', 'C': 'B', 'D': 'A' },
 }
 
-const drawSquare = (canvas, seed) => {
-  const seedSize = seed.length;
-  canvas.size(seedSize * pixelSizeX4 * 4, seedSize * pixelSizeX4 * 4);
+const drawRectangle = (canvas, warp, weft) => {
+  if (!weft) { weft = warp }
+  canvas.size(warp.length * pixelSizeX16, weft.length * pixelSizeX16);
 
   const fills = {
     'A': canvas.pattern(pixelSizeX4, pixelSizeX4, textureA),
@@ -90,8 +90,8 @@ const drawSquare = (canvas, seed) => {
     'C': canvas.pattern(pixelSizeX4, pixelSizeX4, textureC),
     'D': canvas.pattern(pixelSizeX4, pixelSizeX4, textureD)
   }
-  seed.split('').forEach((weftChar, rowIdx, row) => {
-    row.forEach((warpChar, threadIdx) => {
+  weft.split('').forEach((weftChar, rowIdx) => {
+    warp.split('').forEach((warpChar, threadIdx) => {
       const block = canvas.rect(pixelSizeX16, pixelSizeX16)
       block.move(pixelSizeX16 * threadIdx, pixelSizeX16 * rowIdx)
       const fill = calculateTexture[warpChar][weftChar];
@@ -103,7 +103,7 @@ const drawSquare = (canvas, seed) => {
   return canvas;
 }
 
-const flowerbedSVG = (seed, colorOverrides = {}) => {
+const flowerbedSVG = (seeds, colorOverrides = {}) => {
   // headless dom setup, important but boring 
   const window = createSVGWindow();
   const document = window.document;
@@ -118,7 +118,7 @@ const flowerbedSVG = (seed, colorOverrides = {}) => {
 
   // let's draw some flowers
   const canvas = SVG(document.documentElement);
-  const svg = drawSquare(canvas, seed).svg();
+  const svg = drawRectangle(canvas, ...seeds).svg();
 
   // remove any color overrides because otherwise we have to deal with state management and no thank you
   resetColors();

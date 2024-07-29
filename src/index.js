@@ -17,8 +17,9 @@ app.engine('html', renderFile);
 // render a generated flowerbed svg
 // not guaranteed to give you the same thing every time
 app.get("/", (req, res) => {
-  const seed = wiggle();
-  res.render("layout.html", { seed: seed, flowerbedSVG: flowerbedSVG(seed, req.query) });
+  const warp = wiggle();
+  const weft = wiggle();
+  res.render("layout.html", { seed: `${warp}/${weft}`, flowerbedSVG: flowerbedSVG([warp, weft], req.query) });
 })
 
 // same thing as above but with the seed in the URL (ie a permalink)
@@ -27,7 +28,18 @@ app.get("/:seed([ABCD]+)", (req, res) => {
     "layout.html", 
     { 
       seed: req.params.seed, 
-      flowerbedSVG: flowerbedSVG(req.params.seed.toUpperCase(), req.query) 
+      flowerbedSVG: flowerbedSVG([req.params.seed.toUpperCase()], req.query) 
+    }
+  );
+})
+
+app.get("/:warp([ABCD]+)/:weft([ABCD]+)", (req, res) => {
+  const { warp, weft } = req.params;
+  res.render(
+    "layout.html", 
+    { 
+      seed: `${warp}/${weft}`, 
+      flowerbedSVG: flowerbedSVG([warp.toUpperCase(), weft.toUpperCase()], req.query) 
     }
   );
 })
@@ -36,7 +48,7 @@ app.get("/bangbang", (req, res) => {
   res.render(
     "bangbang.html",
     {
-      background: flowerbedSVG(wiggle(10))
+      background: flowerbedSVG([wiggle(10)])
     }
   )
 })
