@@ -7,19 +7,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="a canvas for drawing flowerbeds filled with interesting textures" />
+  <link rel="stylesheet" href="https://unpkg.com/mvp.css"> 
   <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
-  <header>
+  <main>
     <h1>let's draw a flowerbed!!</h1>
-  </header>
 
-  <%- flowerbedSVG %>
+    <%- flowerbedSVG %>
 
-  <a href="/<%= seed %>">Permalink</a>
-  <br />
-  <a href="/<%= seed %>.wif">Download Profile WIF</a>
+    <a href="/<%= seed %>"><b>Permalink</b></a>
+    <a href="/<%= seed %>.wif"><b>Download WIF (profile)</b></a>
+  </main>
 </body>
-
 </html>
