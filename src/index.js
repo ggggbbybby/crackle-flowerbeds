@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = 4242 //process.env.PORT;
 
 app.use(express.static('public'));
 app.set("view engine", "html");
@@ -31,7 +31,7 @@ app.get("/:warp([ABCD]+)", (req, res) => {
     "layout.html", 
     { 
       seed: `${req.params.warp}/${weft}`, 
-      flowerbedSVG: flowerbedSVG([req.params.warp.toUpperCase(), wiggle(5)], req.query) 
+      flowerbedSVG: flowerbedSVG([req.params.warp.toUpperCase(), weft], req.query) 
     }
   );
 })

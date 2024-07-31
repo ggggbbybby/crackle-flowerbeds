@@ -53,20 +53,22 @@ export const nextBlockSize = (currentBlockSize) => {
   // instead of randomly selecting block sizes, create smooth curves that tend to get larger or smaller
   // "smooth curves" is entirely vibes based
   
-  // made up rule: there should always be a 33% chance that you stay at the same block size
-  const rand = Math.random();
-  if (rand <= 0.33) {
-    return currentBlockSize
-  }
-
   // if we're at one extreme and we win a coin flip, then change block size direction
+  const rand = Math.random();
   if ((currentBlockSize === 1 || currentBlockSize === 5) && rand >= 0.5) {
     blockSizeIncreasing = !blockSizeIncreasing
   }
 
+  // made up rules: 
+  // there should always be a 33% chance that you stay at the same block size
   // 50% chance to go 1 step in the current direction, 
   // 10% chance to go 2 steps
   // 7% chance to go 1 in the opposite direction (without changing the overall direction)
+  
+  if (rand <= 0.33) {
+    return currentBlockSize
+  }
+
   const idx = blockSizes.indexOf(currentBlockSize)
   if (rand <= 0.83) {
     const nextIdx = idx + (blockSizeIncreasing && 1 || -1)
@@ -84,12 +86,13 @@ export const nextBlockSize = (currentBlockSize) => {
 }
 
 export const linePointLine = (pointCount = 1) => {
+  const d7 = () => Math.ceil(Math.random() * 7)
   // create a set of instructions to generate a wave with random segment lengths
   let points = 0
   let out = [{ type: 'line', width: d4() }]
   
   while (points < pointCount) {
-    out.push({ type: 'point', width: d4() })
+    out.push({ type: 'point', width: d7() })
     out.push({ type: 'line', width: d4() })
     points++
   }

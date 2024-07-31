@@ -3,6 +3,10 @@ svg {
   padding: 10px;
 }
 
+main {
+  max-width: none;
+}
+
 header {
   text-align: left;
 }
